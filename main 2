@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WH1T3B34RD Games</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #111827;
+            color: white;
+        }
+
+        header {
+            background: #0f172a;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 2px solid #374151;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 35px;
+        }
+
+        header p {
+            color: #9ca3af;
+        }
+
+        .search {
+            width: 90%;
+            max-width: 600px;
+            padding: 14px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .categories button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #374151;
+            color: white;
+            cursor: pointer;
+        }
+
+        .categories button:hover {
+            background: #4b5563;
+        }
+
+        .games {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            padding: 25px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .game {
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .game:hover {
+            transform: translateY(-4px);
+            background: #273449;
+        }
+
+        .game-icon {
+            font-size: 45px;
+        }
+
+        .game h3 {
+            margin: 10px 0;
+        }
+
+        .game p {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .play {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .play:hover {
+            background: #1d4ed8;
+        }
+
+        #gameScreen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #111827;
+            z-index: 10;
+            padding: 25px;
+            text-align: center;
+        }
+
+        #gameScreen h2 {
+            font-size: 30px;
+        }
+
+        #closeGame {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 18px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        #gameArea {
+            margin: 30px auto;
+            max-width: 600px;
+            min-height: 300px;
+            background: #1f2937;
+            border-radius: 15px;
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🎮 WH1T3B34RD GAMES</h1>
+    <p>100 games in one place</p>
+
+    <input
+        class="search"
+        id="search"
+        type="text"
+        placeholder="Search games..."
+    >
+</header>
+
+<div class="categories">
+    <button onclick="filterGames('all')">All</button>
+    <button onclick="filterGames('Arcade')">Arcade</button>
+    <button onclick="filterGames('Puzzle')">Puzzle</button>
+    <button onclick="filterGames('Action')">Action</button>
+    <button onclick="filterGames('Sports')">Sports</button>
+</div>
+
+<div class="games" id="games"></div>
+
+<div id="gameScreen">
+
+    <button id="closeGame" onclick="closeGame()">Close</button>
+
+    <h2 id="gameTitle"></h2>
+
+    <div id="gameArea"></div>
+
+</div>
+
+<script>
+
+const gameNames = [
+    "Snake",
+    "Dodge",
+    "Reaction Test",
+    "Click Challenge",
+    "Number Guess",
+    "Memory Match",
+    "Rock Paper Scissors",
+    "Tic Tac Toe",
+    "Math Rush",
+    "Color Match",
+    "Space Dodge",
+    "Target Practice",
+    "Jump Master",
+    "Coin Collector",
+    "Maze Runner",
+    "Word Scramble",
+    "Quick Math",
+    "Box Catcher",
+    "Avoid the Blocks",
+    "Mini Golf",
+    "Basketball",
+    "Soccer",
+    "Baseball",
+    "Hockey",
+    "Tennis",
+    "Bowling",
+    "Car Racer",
+    "Bike Racer",
+    "Rocket Run",
+    "Pixel Runner",
+    "Ninja Jump",
+    "Robot Fight",
+    "Alien Attack",
+    "Zombie Defense",
+    "Castle Defense",
+    "Tower Defense",
+    "Treasure Hunt",
+    "Dungeon Escape",
+    "Space Battle",
+    "Meteor Dodge",
+    "Asteroid Hunter",
+    "Planet Defender",
+    "Laser Dodge",
+    "Tank Battle",
+    "Cannon Shot",
+    "Target Master",
+    "Aim Trainer",
+    "Quick Click",
+    "Fast Fingers",
+    "Typing Race",
+    "Word Race",
+    "Letter Hunt",
+    "Word Builder",
+    "Memory Cards",
+    "Pattern Match",
+    "Color Memory",
+    "Number Memory",
+    "2048 Mini",
+    "Block Puzzle",
+    "Tile Match",
+    "Connect Four",
+    "Checkers",
+    "Chess Mini",
+    "Dots",
+    "Hangman",
+    "Trivia",
+    "Quiz Master",
+    "History Quiz",
+    "Science Quiz",
+    "Math Quiz",
+    "Geography Quiz",
+    "Music Quiz",
+    "Animal Quiz",
+    "Food Quiz",
+    "Guess the Number",
+    "Higher or Lower",
+    "Dice Roller",
+    "Coin Flip",
+    "Spinner",
+    "Reaction Game",
+    "Timing Game",
+    "Button Smash",
+    "Click Speed",
+    "Endless Runner",
+    "Jump Game",
+    "Flappy Square",
+    "Platform Jump",
+    "Sky Dodge",
+    "Falling Blocks",
+    "Stacker",
+    "Balance",
+    "Road Dodge",
+    "Traffic Dodge",
+    "Car Parking",
+    "Fishing",
+    "Fishing Challenge",
+    "Treasure Diver",
+    "Island Explorer",
+    "Final Boss"
+];
+
+const icons = [
+    "🐍","💥","⚡","🖱️","🔢","🧠","✊","⭕","➗","🎨",
+    "🚀","🎯","🦘","🪙","🧩","🔤","🧮","📦","🧱","⛳",
+    "🏀","⚽","⚾","🏒","🎾","🎳","🏎️","🚲","🚀","🏃",
+    "🥷","🤖","👽","🧟","🏰","🗼","💎","🏃","🌌","☄️"
+];
+
+const categories = [
+    "Arcade",
+    "Puzzle",
+    "Action",
+    "Sports"
+];
+
+const gamesContainer = document.getElementById("games");
+
+function createGames() {
+
+    gamesContainer.innerHTML = "";
+
+    gameNames.forEach((name, index) => {
+
+        const game = document.createElement("div");
+
+        game.className = "game";
+
+        game.dataset.name = name.toLowerCase();
+
+        game.innerHTML = `
+            <div class="game-icon">
+                ${icons[index % icons.length]}
+            </div>
+
+            <h3>${name}</h3>
+
+            <p>${categories[index % categories.length]}</p>
+
+            <button class="play"
+                onclick="playGame('${name}')">
+                Play
+            </button>
+        `;
+
+        gamesContainer.appendChild(game);
+    });
+}
+
+function filterGames(category) {
+
+    const allGames = document.querySelectorAll(".game");
+
+    allGames.forEach((game, index) => {
+
+        if (category === "all") {
+            game.style.display = "block";
+        }
+
+        else if (categories[index % categories.length] === category) {
+            game.style.display = "block";
+        }
+
+        else {
+            game.style.display = "none";
+        }
+    });
+}
+
+document.getElementById("search").addEventListener("input", function() {
+
+    const search = this.value.toLowerCase();
+
+    document.querySelectorAll(".game").forEach(game => {
+
+        if (game.dataset.name.includes(search)) {
+            game.style.display = "block";
+        }
+
+        else {
+            game.style.display = "none";
+        }
+    });
+});
+
+function playGame(name) {
+
+    document.getElementById("gameScreen").style.display = "block";
+
+    document.getElementById("gameTitle").textContent = name;
+
+    const area = document.getElementById("gameArea");
+
+    area.innerHTML = `
+        <h2>🎮 ${name}</h2>
+
+        <p>This game is being built!</p>
+
+        <button class="play" onclick="startMiniGame()">
+            Start
+        </button>
+
+        <div id="miniGame"></div>
+    `;
+}
+
+function startMiniGame() {
+
+    const miniGame = document.getElementById("miniGame");
+
+    let score = 0;
+
+    miniGame.innerHTML = `
+        <h2>Click the Button!</h2>
+
+        <p>Score: <span id="score">0</span></p>
+
+        <button class="play" id="clickButton">
+            CLICK!
+        </button>
+    `;
+
+    document.getElementById("clickButton").onclick = function() {
+
+        score++;
+
+        document.getElementById("score").textContent = score;
+
+    };
+}
+
+function closeGame() {
+
+    document.getElementById("gameScreen").style.display = "none";
+
+}
+
+createGames();
+
+</script>
+
+</body>
+</html>
